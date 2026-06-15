@@ -1,0 +1,22 @@
+name: loom
+description: Loom model-to-RTL compiler. Turns LLM model files into Harbor/ROHD accelerator IP.
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.11.2
+
+dependencies:
+  args: ^2.7.0
+  harbor:
+    git:
+      url: https://git.lilithsemi.com/LilithSemi/harbor
+      path: packages/harbor
+      ref: master
+  rohd: ^0.6.8
+  rohd_hcl: ^0.2.1
+  rohd_bridge: ^0.2.2
+
+dev_dependencies:
+  test: ^1.25.0
+  lints: ^6.0.0

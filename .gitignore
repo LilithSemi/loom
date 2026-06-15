@@ -6,6 +6,7 @@
 build/
 # If you're building an application, you may want to check-in your pubspec.lock
 pubspec.lock
+!ip/pubspec.lock
 
 # Directory created by dartdoc
 # If you don't generate documentation locally you can remove this line.
@@ -13,6 +14,7 @@ doc/api/
 
 # dotenv environment variables file
 .env*
+!.envrc
 
 # Avoid committing generated Javascript files:
 *.dart.js
@@ -27,3 +29,32 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# Nix build result symlink
+result
+.direnv
+
+# Dart tool cache under ip/
+ip/.dart_tool/
+
+# Model weight cache (large binary files)
+.cache/
+
+# Generated SoC / synthesis output dirs (RTL, bitstreams, nextpnr JSON)
+out/
+out_uart/
+build_usb/
+build_uart/
+*.bit
+*.config
+
+# Zig runtime build artifacts
+runtime/zig-out/
+runtime/.zig-cache/
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Genip model output dirs (loom.json + scales/glue/weights/bitstream)
+out_*/
