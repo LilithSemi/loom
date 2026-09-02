@@ -1,0 +1,56 @@
+# Glossary
+
+Short definitions for the terms used across these docs.
+
+- **activation** - the vector that moves between the layers of a model. Loom sends activations to the device as fp16 and quantizes them to int8 on the device.
+- **BitNet ternary** - a quantization scheme with the weight values -1, 0 and +1. The accelerator needs no multiplier for it. See [models.md](models.md).
+- **BPE** - Byte Pair Encoding. The tokenizer algorithm in a HuggingFace `tokenizer.json`.
+- **BRAM** - block RAM. The on-chip memory of the FPGA. Loom can use it as a hot-weight cache.
+- **cold matrix** - a matrix that stays in the main weight store. The opposite of a hot matrix.
+- **CSR** - control and status register. The host reads and writes the accelerator through CSRs.
+- **DDR3** - the external DRAM on the board. Loom can use it as a weight store.
+- **dequantization** - the step that changes an int32 accumulator back to fp16. Loom multiplies by the row scale and the activation scale.
+- **DirtyJTAG** - the USB-to-serial bridge firmware on the OrangeCrab. It gives the host `/dev/ttyACM0`.
+- **ECP5** - the Lattice FPGA family of the reference board.
+- **ecpprog** - the tool that writes a bitstream or a weight image to the board's config flash.
+- **fp16** - the 16-bit floating-point format. Loom uses it at the boundary of the device and for all host math.
+- **GGUF** - the llama.cpp model file format. Loom reads the metadata, the tokenizer and the weights from it.
+- **glue weights** - the fp16 weights that the host uses. Loom writes them to `glue.bin`. See [models.md](models.md).
+- **golden model** - the Dart reference model of the quantized forward pass. Tests compare RTL and silicon against it.
+- **GQA** - Grouped Query Attention. Attention with fewer key/value heads than query heads.
+- **Harbor** - LilithSemi's SoC framework. It supplies the Wishbone fabric, the memory controllers and the board catalog.
+- **hot matrix** - a matrix that the BRAM cache holds. `loom-genip` selects the largest matrices first.
+- **int4** - the 4-bit integer format of the weight image.
+- **int8** - the 8-bit integer format of the quantized activations.
+- **KV cache** - the stored keys and values of the earlier tokens. The host keeps it.
+- **LPF** - the Lattice pin constraint file. It maps a signal name to a pin site.
+- **LTB1** - the tokenizer format of the runtime. `loom-genip` compiles a `tokenizer.json` into it.
+- **manifest** - the file `loom.json`. It tells the runtime the model dimensions, the addresses and the location of each matrix.
+- **matmul** - a matrix multiplication. The device does all transformer matmuls.
+- **MoE** - Mixture of Experts. Each layer holds many expert matrices and a router selects some of them.
+- **MTP** - Multi-Token Prediction. Extra modules that draft more than one token per step.
+- **nanobind** - the C++ library that builds the Python extension.
+- **nextpnr** - the place-and-route tool for the ECP5.
+- **OrangeCrab** - the reference board. It carries an ECP5 25F, 128 MB of DDR3 and 16 MiB of config flash.
+- **overlay** - the first SoC variant. It holds an 8x8 PE array and no memory. See [architecture.md](architecture.md).
+- **PE array** - processing-element array. The grid of multiply-accumulate cells in the accelerator.
+- **pixel shuffle** - the Idefics3 step that moves vision tokens from space into channels. The `scale_factor` in the manifest sets it.
+- **projector** - the matrices that map vision-tower output into the language model's space.
+- **quantization group** - a set of weights that share one scale. Loom uses one scale per row, or one scale per group when the source model does.
+- **RMSNorm** - root-mean-square normalization. The host does it.
+- **ROHD** - the Dart hardware description framework. The `ip` package builds its RTL with it.
+- **RoPE** - Rotary Position Embedding. The host applies it.
+- **safetensors** - the HuggingFace weight file format. A model has one file or an index plus shards.
+- **scale** - the fp16 multiplier that converts an integer weight or activation back to fp16.
+- **sim** - the in-process device emulator in `runtime/lib/loom/sim.zig`. It runs the full stack without hardware.
+- **SoC variant** - one of `overlay`, `stream` or `fp`. The `--soc` flag selects it.
+- **SVD (file)** - System View Description. The register description file that `loom-genip` emits.
+- **SVD (math)** - singular value decomposition. A research tool in the golden directory.
+- **tile-major** - the layout of the weight image. Loom stores the weights in the order that the accelerator reads them.
+- **tokenizer fixture** - the file `tokenizer_fixture.json`. It holds prompts and the expected token ids, and it gates the runtime tokenizer.
+- **transport** - the link between the host and the board. Loom has a UART transport and a USB transport.
+- **USRMCLK** - the ECP5 macro that gives user logic the clock pin of the config flash.
+- **ViT** - Vision Transformer. The image tower of a vision-language model.
+- **W4A8** - int4 weights against int8 activations, with int32 accumulation. The arithmetic of the `fp` accelerator.
+- **Wishbone** - the on-chip bus standard of the Harbor fabric.
+- **yosys** - the synthesis tool. It changes the SystemVerilog into a netlist.
