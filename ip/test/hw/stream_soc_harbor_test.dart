@@ -31,7 +31,12 @@ void main() {
       final soc = buildLoomSoc(
         name: 'LoomStreamSoC',
         transport: LoomTransport.uart,
-        datapath: const StreamDatapath(),
+        // No target: this test is about the composition and the submodules,
+        // which do not change with the device. With no target HarborSram
+        // builds its generic model, which stops above 1024 words, so ask for
+        // the 4 KiB that fits it. The tests below build the default 16 KiB
+        // scratchpad against a real target.
+        datapath: const StreamDatapath(sramSize: 4096),
       );
       await soc.build();
       final sv = soc.generateSynth();
