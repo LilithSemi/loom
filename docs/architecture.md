@@ -20,7 +20,7 @@ flowchart TD
 
     ckpt --> frontend
 
-    rtl["RTL and board files<br>SystemVerilog, DTS, SVD, LPF, synth.tcl, Makefile"]
+    rtl["RTL and board files<br>SystemVerilog, DTS, SVD,<br>pin constraints, synth.tcl, Makefile"]
     images["Weight images<br>weights.bin, scales_flash.bin"]
     hostart["Host artifacts<br>glue.bin, tokenizer.bin, loom.json"]
 
@@ -29,10 +29,10 @@ flowchart TD
     weights --> hostart
     tokenizer --> hostart
 
-    bitstream["Bitstream<br>yosys, nextpnr, ecppack"]
+    bitstream["Bitstream<br>yosys, nextpnr, the vendor packer"]
     rtl --> bitstream
 
-    subgraph fpga["FPGA board: the SoC"]
+    subgraph fpga["FPGA board (ECP5, iCE40 or Xilinx): the SoC"]
         bridge["Host bridge<br>UART or USB"]
         fabric["Wishbone fabric"]
         accel["Loom accelerator<br>W4A8 linear engine"]
@@ -48,8 +48,8 @@ flowchart TD
         cli --> glue
     end
 
-    bitstream -->|"ecpprog"| bridge
-    images -->|"ecpprog -o 0x200000"| store
+    bitstream -->|"write the bitstream"| bridge
+    images -->|"write at 0x200000"| store
     hostart --> cli
     cli <-->|"fp16 activations and results"| bridge
     glue --> tokens["Tokens<br>stdout or the OpenAI API"]
@@ -136,14 +136,17 @@ a 2 KiB window. The flash images sit above the bitstream at byte offset
 
 ### Clocking
 
-The board oscillator runs at 48 MHz.
+The source clock is the oscillator of the board. Harbor builds the PLL for the
+vendor of the target.
 
 - `overlay` runs directly from the oscillator.
 - `stream` runs from the oscillator. With `--ddr` it runs from the PLL at
   `--fp-mhz` instead, because DDR3 does not close timing at 48 MHz.
-- `fp` runs from the PLL. The default is 30 MHz. The placed design closes at
-  approximately 37 MHz, and 30 MHz makes the default 1.5 Mbaud UART an exact
-  divisor.
+- `fp` runs from the PLL. The default is 30 MHz.
+
+On the reference board the oscillator gives 48 MHz, the placed `fp` design
+closes at approximately 37 MHz, and 30 MHz makes the default 1.5 Mbaud UART an
+exact divisor. See [hardware.md](hardware.md#clocking-and-baud).
 
 ## The runtime (`runtime/`)
 

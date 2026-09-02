@@ -13,6 +13,10 @@ promise. The project is at version 0.0.1, and it is research code.
 - **The compiler.** `loom-genip` reads HuggingFace, GGUF and llama2.c
   checkpoints, and it emits the SoC RTL, the board files, the weight images and
   the manifest. See [genip.md](genip.md).
+- **Retargeting.** The SoC builds for Lattice ECP5, Lattice iCE40 and Xilinx
+  7-series parts. `--board` takes a board from the catalog, and `--target`
+  with `--pin` takes any ECP5 or iCE40 part. See
+  [hardware.md](hardware.md#select-a-target).
 - **The tiered weight cache.** `--fp-bram-cache-kb` moves the largest matrices
   into on-chip BRAM. The rest stay in the main store.
 - **The host runtime.** `loom-cli` gives you `generate`, `serve`, `fetch` and
@@ -32,7 +36,9 @@ promise. The project is at version 0.0.1, and it is research code.
   proves the transport and the PE array. `stream` proves memory-backed
   matmuls. Neither runs a model.
 - **The DDR3 weight store.** The controller works, but you must sweep
-  `--ddr-read-tap` on the board to centre the read eye.
+  `--ddr-read-tap` on the board to centre the read eye. Only the OrangeCrab
+  entry is proven. The Arty S7-50 entry builds with the Xilinx PHY, but nobody
+  has run it.
 - **The full-forward datapath.** `ip/lib/src/hw/forward.dart` and the fp
   functional blocks (`fp_rmsnorm`, `fp_silu`, `fp_softmax`, `fp_rope`) move
   more of the model onto the device. They are exploratory, and the demo
@@ -52,5 +58,9 @@ promise. The project is at version 0.0.1, and it is research code.
 - **Large models.** The reference board holds approximately 14 MiB of weights
   in flash. Bigger models need DDR3 or a bigger part. See
   [models.md](models.md#choosing-a-model).
+- **Boards other than the reference board.** Only `orangecrab-25f` runs today.
+  The catalog also holds `ulx3s-85f` and `arty-s7-50`, but nobody has proven a
+  Loom build on them. The `overlay` board shims still hold OrangeCrab pins, and
+  `ulx3s-85f` has no DDR entry.
 - **Speed.** The UART is the bottleneck. A token can take seconds. Use
   `--stats` to see where the time goes.

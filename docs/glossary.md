@@ -4,6 +4,7 @@ Short definitions for the terms used across these docs.
 
 - **activation** - the vector that moves between the layers of a model. Loom sends activations to the device as fp16 and quantizes them to int8 on the device.
 - **BitNet ternary** - a quantization scheme with the weight values -1, 0 and +1. The accelerator needs no multiplier for it. See [models.md](models.md).
+- **board catalog** - Harbor's table of known boards. `--board` reads the part, the oscillator, the pin sites and the program command from it.
 - **BPE** - Byte Pair Encoding. The tokenizer algorithm in a HuggingFace `tokenizer.json`.
 - **BRAM** - block RAM. The on-chip memory of the FPGA. Loom can use it as a hot-weight cache.
 - **cold matrix** - a matrix that stays in the main weight store. The opposite of a hot matrix.
@@ -11,7 +12,7 @@ Short definitions for the terms used across these docs.
 - **DDR3** - the external DRAM on the board. Loom can use it as a weight store.
 - **dequantization** - the step that changes an int32 accumulator back to fp16. Loom multiplies by the row scale and the activation scale.
 - **DirtyJTAG** - the USB-to-serial bridge firmware on the OrangeCrab. It gives the host `/dev/ttyACM0`.
-- **ECP5** - the Lattice FPGA family of the reference board.
+- **ECP5** - the Lattice FPGA family of the reference board. Loom also builds for iCE40 and Xilinx 7-series parts.
 - **ecpprog** - the tool that writes a bitstream or a weight image to the board's config flash.
 - **fp16** - the 16-bit floating-point format. Loom uses it at the boundary of the device and for all host math.
 - **GGUF** - the llama.cpp model file format. Loom reads the metadata, the tokenizer and the weights from it.
@@ -30,8 +31,9 @@ Short definitions for the terms used across these docs.
 - **MoE** - Mixture of Experts. Each layer holds many expert matrices and a router selects some of them.
 - **MTP** - Multi-Token Prediction. Extra modules that draft more than one token per step.
 - **nanobind** - the C++ library that builds the Python extension.
-- **nextpnr** - the place-and-route tool for the ECP5.
-- **OrangeCrab** - the reference board. It carries an ECP5 25F, 128 MB of DDR3 and 16 MiB of config flash.
+- **nextpnr** - the place-and-route tool. It has one build for each family: `nextpnr-ecp5`, `nextpnr-ice40` and `nextpnr-xilinx`.
+- **openXC7** - the open toolchain for Xilinx 7-series parts: `nextpnr-xilinx` with prjxray.
+- **OrangeCrab** - the reference board, and the default `--board`. It carries an ECP5 25F, 128 MB of DDR3 and 16 MiB of config flash.
 - **overlay** - the first SoC variant. It holds an 8x8 PE array and no memory. See [architecture.md](architecture.md).
 - **PE array** - processing-element array. The grid of multiply-accumulate cells in the accelerator.
 - **pixel shuffle** - the Idefics3 step that moves vision tokens from space into channels. The `scale_factor` in the manifest sets it.
@@ -49,7 +51,7 @@ Short definitions for the terms used across these docs.
 - **tile-major** - the layout of the weight image. Loom stores the weights in the order that the accelerator reads them.
 - **tokenizer fixture** - the file `tokenizer_fixture.json`. It holds prompts and the expected token ids, and it gates the runtime tokenizer.
 - **transport** - the link between the host and the board. Loom has a UART transport and a USB transport.
-- **USRMCLK** - the ECP5 macro that gives user logic the clock pin of the config flash.
+- **USRMCLK** - the ECP5 macro that gives user logic the clock pin of the config flash. Xilinx parts use `STARTUPE2` for the same purpose.
 - **ViT** - Vision Transformer. The image tower of a vision-language model.
 - **W4A8** - int4 weights against int8 activations, with int32 accumulation. The arithmetic of the `fp` accelerator.
 - **Wishbone** - the on-chip bus standard of the Harbor fabric.

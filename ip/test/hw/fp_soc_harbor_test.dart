@@ -8,6 +8,7 @@
 import 'dart:io';
 
 import 'package:harbor/harbor.dart';
+import 'package:loom/loom.dart' show LoomDdrBoard;
 import 'package:rohd/rohd.dart';
 import 'package:test/test.dart';
 
@@ -99,7 +100,7 @@ void main() {
         transport: LoomTransport.uart,
         target: _ecp5(),
         fabricHz: 16000000,
-        datapath: const FpDatapath(weightsInDdr: true),
+        datapath: FpDatapath(ddr: LoomDdrBoard.require('orangecrab-25f')),
       );
       await soc.build();
       final sv = soc.generateSynth();

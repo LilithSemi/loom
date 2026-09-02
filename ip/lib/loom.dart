@@ -68,6 +68,7 @@ export 'src/nano/nano_model.dart';
 export 'src/hw/usb_bridge.dart';
 export 'src/hw/usb_device.dart';
 export 'src/hw/uart_bridge.dart';
+export 'src/hw/ddr_boards.dart';
 
 /// Library version string (used by the smoke test and `--version`).
 const String loomVersion = '0.0.1';

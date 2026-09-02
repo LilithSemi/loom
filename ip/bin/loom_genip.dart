@@ -814,82 +814,6 @@ const _bramWeightBase =
 // so overflow is a loud WARNING, not an error.
 const _ecp5UsableFlashBytes = 14 * 1024 * 1024;
 
-/// Names of the OrangeCrab DDR3 SDRAM pads, exposed to the SoC top.
-const _ddrPads = [
-  'sdram_ck',
-  'sdram_cke',
-  'sdram_cs_n',
-  'sdram_ras_n',
-  'sdram_cas_n',
-  'sdram_we_n',
-  'sdram_ba',
-  'sdram_addr',
-  'sdram_dm',
-  'sdram_dq',
-  'sdram_ck_n',
-  'sdram_dqs',
-  'sdram_dqs_n',
-  'sdram_odt',
-  'sdram_reset_n',
-];
-
-/// OrangeCrab r0.2 DDR3 (MT41K64M16 DDR3L) per-bit pad constraints, SSTL135_I.
-/// Ported from River's DdrBoard.byName['orangecrab'] (proven on this board with
-/// the same HarborDdrController). Vector pads use `port[index]` to match the
-/// synthesized netlist. The data pads add TERMINATION=OFF. Read-eye centering is
-/// done by sweeping the static read tap (--ddr-read-tap).
-const Map<String, String> _orangeCrabDdrPinMap = {
-  'sdram_ck': 'J18 SSTL135_I SLEWRATE=FAST',
-  'sdram_ck_n': 'K18 SSTL135_I SLEWRATE=FAST',
-  'sdram_cke': 'D18 SSTL135_I SLEWRATE=FAST',
-  'sdram_cs_n': 'A12 SSTL135_I SLEWRATE=FAST',
-  'sdram_ras_n': 'C12 SSTL135_I SLEWRATE=FAST',
-  'sdram_cas_n': 'D13 SSTL135_I SLEWRATE=FAST',
-  'sdram_we_n': 'B12 SSTL135_I SLEWRATE=FAST',
-  'sdram_odt': 'C13 SSTL135_I SLEWRATE=FAST',
-  'sdram_reset_n': 'L18 SSTL135_I SLEWRATE=FAST',
-  'sdram_ba[0]': 'D6 SSTL135_I SLEWRATE=FAST',
-  'sdram_ba[1]': 'B7 SSTL135_I SLEWRATE=FAST',
-  'sdram_ba[2]': 'A6 SSTL135_I SLEWRATE=FAST',
-  'sdram_addr[0]': 'C4 SSTL135_I SLEWRATE=FAST',
-  'sdram_addr[1]': 'D2 SSTL135_I SLEWRATE=FAST',
-  'sdram_addr[2]': 'D3 SSTL135_I SLEWRATE=FAST',
-  'sdram_addr[3]': 'A3 SSTL135_I SLEWRATE=FAST',
-  'sdram_addr[4]': 'A4 SSTL135_I SLEWRATE=FAST',
-  'sdram_addr[5]': 'D4 SSTL135_I SLEWRATE=FAST',
-  'sdram_addr[6]': 'C3 SSTL135_I SLEWRATE=FAST',
-  'sdram_addr[7]': 'B2 SSTL135_I SLEWRATE=FAST',
-  'sdram_addr[8]': 'B1 SSTL135_I SLEWRATE=FAST',
-  'sdram_addr[9]': 'D1 SSTL135_I SLEWRATE=FAST',
-  'sdram_addr[10]': 'A7 SSTL135_I SLEWRATE=FAST',
-  'sdram_addr[11]': 'C2 SSTL135_I SLEWRATE=FAST',
-  'sdram_addr[12]': 'B6 SSTL135_I SLEWRATE=FAST',
-  'sdram_addr[13]': 'C1 SSTL135_I SLEWRATE=FAST',
-  'sdram_addr[14]': 'A2 SSTL135_I SLEWRATE=FAST',
-  'sdram_dm[0]': 'G16 SSTL135_I SLEWRATE=FAST',
-  'sdram_dm[1]': 'D16 SSTL135_I SLEWRATE=FAST',
-  'sdram_dq[0]': 'C17 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dq[1]': 'D15 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dq[2]': 'B17 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dq[3]': 'C16 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dq[4]': 'A15 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dq[5]': 'B13 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dq[6]': 'A17 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dq[7]': 'A13 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dq[8]': 'F17 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dq[9]': 'F16 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dq[10]': 'G15 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dq[11]': 'F15 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dq[12]': 'J16 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dq[13]': 'C18 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dq[14]': 'H16 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dq[15]': 'F18 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dqs[0]': 'B15 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dqs[1]': 'G18 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dqs_n[0]': 'A16 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-  'sdram_dqs_n[1]': 'H17 SSTL135_I SLEWRATE=FAST TERMINATION=OFF',
-};
-
 /// Host transport that drives the SoC's Wishbone fabric as the bus master.
 enum LoomTransport { uart, usb }
 
@@ -912,8 +836,17 @@ final class OverlayDatapath extends LoomDatapath {
 /// optional DDR3 weight store.
 final class StreamDatapath extends LoomDatapath {
   final int sramSize;
-  final bool weightsInDdr;
-  const StreamDatapath({this.sramSize = 16384, this.weightsInDdr = false});
+
+  /// The DDR board that supplies the part configuration and the pad sites, or
+  /// null to leave the weights out of DDR. See [LoomDdrBoard].
+  final LoomDdrBoard? ddr;
+
+  /// The static DDR3 read tap (`--ddr-read-tap`).
+  final int ddrReadTap;
+
+  bool get weightsInDdr => ddr != null;
+
+  const StreamDatapath({this.sramSize = 16384, this.ddr, this.ddrReadTap = 40});
 }
 
 /// The fp16 W4A8 linear accelerator + SRAM scratchpad, with an optional on-chip
@@ -922,21 +855,64 @@ final class FpDatapath extends LoomDatapath {
   final int maxColTiles;
   final int maxRowBlocks;
   final int sramSize;
-  final bool weightsInDdr;
+
+  /// The DDR board that supplies the part configuration and the pad sites, or
+  /// null to leave the weights out of DDR. See [LoomDdrBoard].
+  final LoomDdrBoard? ddr;
+
+  /// The static DDR3 read tap (`--ddr-read-tap`).
+  final int ddrReadTap;
   final bool weightsInFlash;
   final int flashReadAhead;
   final int bramCacheKb;
   final bool ternary;
+
+  bool get weightsInDdr => ddr != null;
+
   const FpDatapath({
     this.maxColTiles = 32,
     this.maxRowBlocks = 32,
     this.sramSize = 16384,
-    this.weightsInDdr = false,
+    this.ddr,
+    this.ddrReadTap = 40,
     this.weightsInFlash = false,
     this.flashReadAhead = 8,
     this.bramCacheKb = 0,
     this.ternary = false,
   });
+}
+
+/// Attaches [board]'s DDR3 as the weight store at [_streamDdrBase] and exposes
+/// its pads. The part configuration comes from the board entry, so a retarget
+/// changes the geometry with it. [target] selects the PHY: Harbor builds the
+/// ECP5 PHY for a Lattice target and the Xilinx PHY for a 7-series target.
+void _attachDdr(
+  HarborSoC soc,
+  LoomDdrBoard board, {
+  required int sysHz,
+  required int readTap,
+  required HarborDeviceTarget? target,
+}) {
+  final ddr = HarborDdrController(
+    config: board.config,
+    baseAddress: _streamDdrBase,
+    clockHz: sysHz,
+    busAddressWidth: 32,
+    readTaps: readTap,
+    target: target,
+  );
+  soc.addPeripheral(ddr);
+  // The controller builds its pad set from the PHY and the clock: the ECP5 PHY
+  // above ~60 MHz makes a true-differential DQS pad and creates no
+  // `sdram_dqs_n` port. Expose the pads that this controller has.
+  for (final pad in LoomDdrBoard.padPorts) {
+    if (ddr.tryInput(pad) == null &&
+        ddr.tryOutput(pad) == null &&
+        ddr.tryInOut(pad) == null) {
+      continue;
+    }
+    soc.exposePin(ddr, pad, externalName: pad);
+  }
 }
 
 /// Attaches [datapath]'s accelerator + memories/weight-store to [soc]. The stream
@@ -958,7 +934,7 @@ void _attachDatapath(
         ),
       );
       soc.addPeripheral(accel);
-    case StreamDatapath(:final sramSize, :final weightsInDdr):
+    case StreamDatapath(:final sramSize, :final ddr, :final ddrReadTap):
       final accel = LoomStreamAccelerator(baseAddress: _streamCsrBase);
       final sram = HarborSram(
         baseAddress: _streamSramBase,
@@ -969,25 +945,18 @@ void _attachDatapath(
       soc.addMaster(accel, busInterfaceName: 'mem');
       soc.addPeripheral(accel);
       soc.addPeripheral(sram);
-      // Weight store: the OrangeCrab's 128MB DDR3 (Harbor's verified controller).
-      // CK = system clock (1:1); qualified at 48MHz.
-      if (weightsInDdr) {
-        final ddr = HarborDdrController(
-          config: const HarborDdrConfig.orangeCrab(),
-          baseAddress: _streamDdrBase,
-          clockHz: sysHz,
-          busAddressWidth: 32,
-        );
-        soc.addPeripheral(ddr);
-        for (final pad in _ddrPads) {
-          soc.exposePin(ddr, pad, externalName: pad);
-        }
+      // Weight store: the board's DDR3, through Harbor's controller. The part
+      // configuration comes from the board entry, so the geometry follows the
+      // board and not one hardcoded part. CK = system clock (1:1).
+      if (ddr != null) {
+        _attachDdr(soc, ddr, sysHz: sysHz, readTap: ddrReadTap, target: target);
       }
     case FpDatapath(
       :final maxColTiles,
       :final maxRowBlocks,
       :final sramSize,
-      :final weightsInDdr,
+      :final ddr,
+      :final ddrReadTap,
       :final weightsInFlash,
       :final flashReadAhead,
       :final bramCacheKb,
@@ -1023,17 +992,8 @@ void _attachDatapath(
           ),
         );
       }
-      if (weightsInDdr) {
-        final ddr = HarborDdrController(
-          config: const HarborDdrConfig.orangeCrab(),
-          baseAddress: _streamDdrBase,
-          clockHz: sysHz,
-          busAddressWidth: 32,
-        );
-        soc.addPeripheral(ddr);
-        for (final pad in _ddrPads) {
-          soc.exposePin(ddr, pad, externalName: pad);
-        }
+      if (ddr != null) {
+        _attachDdr(soc, ddr, sysHz: sysHz, readTap: ddrReadTap, target: target);
       }
       // Resident weight store in the config SPI flash: the accelerator reads int4
       // weights straight from flash (memory-mapped at [_streamDdrBase]), so the
@@ -1771,6 +1731,26 @@ Future<void> main(List<String> argv) async {
   final output = args.option('output')!;
   final transport = args.option('transport')!;
 
+  // --ddr: the DRAM part configuration AND the pad sites come from the board
+  // entry ([LoomDdrBoard.byName]), in the way River's DdrBoard.byName works. A
+  // board with no entry is an error, so a build cannot take the pad sites of a
+  // different board. --target names no board, so it cannot supply either.
+  final ddrReadTap = int.parse(args.option('ddr-read-tap')!);
+  LoomDdrBoard? ddrBoard;
+  var ddrPinMap = const <String, String>{};
+  if (args.flag('ddr')) {
+    if (args.option('target') != null) {
+      throw ArgumentError(
+        '--ddr needs --board: the DRAM part configuration and the pad sites '
+        'come from the board entry. Known: '
+        '${LoomDdrBoard.byName.keys.join(', ')}.',
+      );
+    }
+    final board = args.option('board')!;
+    ddrBoard = LoomDdrBoard.require(board);
+    ddrPinMap = LoomDdrBoard.pinsFor(board);
+  }
+
   // The streaming, memory-backed-matmul SoC: fully Harbor-generated and
   // target-parameterized. Orthogonal to --transport (it always uses the UART
   // host bridge for now). Selected via --soc stream.
@@ -1783,7 +1763,7 @@ Future<void> main(List<String> argv) async {
       targetSpec: args.option('target'),
       pinSpecs: args.multiOption('pin'),
       exposedPins: const ['clk', 'uart_tx', 'uart_rx'],
-      extraPinMap: args.flag('ddr') ? _orangeCrabDdrPinMap : const {},
+      extraPinMap: ddrPinMap,
     );
     final soc = buildLoomSoc(
       name: args.option('name') ?? 'LoomStreamSoC',
@@ -1795,7 +1775,7 @@ Future<void> main(List<String> argv) async {
       fabricHz: args.flag('ddr')
           ? int.parse(args.option('fp-mhz')!) * 1000000
           : target.frequency,
-      datapath: StreamDatapath(weightsInDdr: args.flag('ddr')),
+      datapath: StreamDatapath(ddr: ddrBoard, ddrReadTap: ddrReadTap),
     );
     await soc.generateAll(Directory(output));
     stdout.writeln(
@@ -1828,7 +1808,7 @@ Future<void> main(List<String> argv) async {
       targetSpec: args.option('target'),
       pinSpecs: args.multiOption('pin'),
       exposedPins: exposed,
-      extraPinMap: args.flag('ddr') ? _orangeCrabDdrPinMap : const {},
+      extraPinMap: ddrPinMap,
     );
     // Load the model BEFORE building the SoC: a BitNet ternary model makes the
     // fp accelerator's PE multiply-free (ternaryWeights), which is a build-time
@@ -1845,7 +1825,8 @@ Future<void> main(List<String> argv) async {
       datapath: FpDatapath(
         maxColTiles: int.parse(args.option('fp-col-tiles')!),
         maxRowBlocks: int.parse(args.option('fp-row-blocks')!),
-        weightsInDdr: args.flag('ddr'),
+        ddr: ddrBoard,
+        ddrReadTap: ddrReadTap,
         weightsInFlash: args.flag('fp-flash'),
         flashReadAhead: int.parse(args.option('fp-read-ahead')!),
         bramCacheKb: int.parse(args.option('fp-bram-cache-kb')!),

@@ -7,9 +7,14 @@
 - a **target**, which is the board or the FPGA part.
 
 It then writes synthesizable SystemVerilog and the board files: the device
-tree, the SVD file, the `.lpf` constraints, `synth.tcl` and a Makefile. With
-`--soc fp --model` it also writes the weight images, the tokenizer and the
-manifest that the runtime reads.
+tree, the SVD file, the pin constraints (`.lpf`, `.pcf` or `.xdc`), `synth.tcl`
+and a Makefile for the flow of that vendor. With `--soc fp --model` it also
+writes the weight images, the tokenizer and the manifest that the runtime
+reads.
+
+The target is a flag, not a code change. `--board` takes a board from Harbor's
+catalog, and `--target` with `--pin` takes any ECP5 or iCE40 part. See
+[hardware.md](hardware.md#select-a-target).
 
 The Nix package `loom-ip` installs the tool as `loom-genip`. From a checkout,
 run `dart run bin/loom_genip.dart` instead.
@@ -22,11 +27,11 @@ run `dart run bin/loom_genip.dart` instead.
 | `--name` | per transport | The name of the SoC top module. |
 | `--transport` | `usb` | `usb`, `uart`, or one of the link diagnostics `uartprobe`, `uartecho` and `uartechoswap`. See [debugging.md](debugging.md#diagnostic-bitstreams). |
 | `--soc` | `overlay` | `overlay` is the 8x8 PE array. `stream` is the memory-backed int8 matmul. `fp` is the fp16 W4A8 linear engine that runs models. |
-| `--board` | `orangecrab-25f` | A board from Harbor's catalog. It supplies the vendor, the device, the package, the oscillator, the pin sites and the program command. |
-| `--target` | none | A part that the catalog does not hold, as `vendor:device:package`. For example `ecp5:25f:CSFBGA285` or `ice40:up5k:sg48`. It overrides `--board`. |
-| `-p`, `--pin name=site` | OrangeCrab pinout | Add or replace one pin assignment, for example `uart_rx=M18`. Repeat the flag for more pins. |
-| `--ddr` | off | Attach the DDR3 controller as a weight store. The OrangeCrab holds 128 MB. |
-| `--fp-flash` | off | Keep the weights in the config SPI flash. The accelerator reads int4 weights directly from it. |
+| `--board` | `orangecrab-25f` | A board from Harbor's catalog: `orangecrab-25f`, `ulx3s-85f` or `arty-s7-50`. It supplies the vendor, the device, the package, the oscillator, the pin sites and the program command. |
+| `--target` | none | Any part, as `vendor:device:package`. For example `ecp5:25f:CSFBGA285` or `ice40:up5k:sg48`. It takes the `ecp5` and `ice40` vendors, it assumes a 48 MHz input clock, and it overrides `--board`. Give the pins with `--pin`. |
+| `-p`, `--pin name=site` | the catalog sites | Add or replace one pin assignment, for example `uart_rx=M18`. It wins over the catalog. Repeat the flag for more pins. |
+| `--ddr` | off | Attach the DDR3 controller as a weight store. The DRAM part configuration and the pad sites come from the entry of `--board`, so this flag needs `--board`. `orangecrab-25f` and `arty-s7-50` have entries. |
+| `--fp-flash` | off | Keep the weights in the config SPI flash. The accelerator reads int4 weights directly from it. The board must give the flash pins. |
 | `--fp-col-tiles` | `32` | The maximum number of inner-dimension tiles. The accelerator `maxCols` is two times this value. |
 | `--fp-row-blocks` | `32` | The maximum number of output-row blocks. |
 | `--fp-mhz` | `30` | The fabric clock in MHz, from the PLL. |

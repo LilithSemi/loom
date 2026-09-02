@@ -67,23 +67,29 @@ MoE routers, and the norms, biases and embeddings of the vision tower.
 
 ## Choosing a model
 
-The reference board is an OrangeCrab with an ECP5 25F. It gives you:
+Three properties of the target set the size of the model that it runs:
 
-- approximately 14 MiB of config flash for the weights and the scales, because
-  the bitstream sits below `0x200000`,
-- approximately 90 KiB of BRAM for the hot-weight cache, which is close to the
-  full weight set of `stories260K` at approximately 130 KB,
-- an optional 128 MB DDR3 store for a larger model.
+| Property | What it limits |
+| -------- | -------------- |
+| The size of the config flash, less the `0x200000` that the bitstream holds | The weights and the scales that stay resident on the board. |
+| The BRAM of the part | The hot-weight cache from `--fp-bram-cache-kb`, and the size of the accelerator itself. |
+| An external DRAM, if the board has one | The weight store for a model that flash cannot hold. |
+
+The reference board is an OrangeCrab with an ECP5 25F. It gives approximately
+14 MiB of flash for the weights, approximately 90 KiB of BRAM for the cache,
+which is close to the full weight set of `stories260K` at approximately 130
+KB, and an optional 128 MB DDR3 store. A larger part gives more of each. See
+[hardware.md](hardware.md#select-a-target).
 
 | Model size | What to do |
 | ---------- | ---------- |
 | `stories260K` class | Keep the weights in flash. Add `--fp-bram-cache-kb 90` to pull the hot matrices on chip. |
 | A few MB | Flash still holds it, but the flash reads make generation slow. Move to `--ddr` for more speed. |
-| More than the flash holds | Use `--ddr`, or use a smaller model. |
+| More than the flash holds | Use `--ddr`, use a board with a larger flash, or use a smaller model. |
 
-`loom-genip` gives a warning when the weight image is larger than the usable
-14 MiB of flash. It stops with an error when the weights and the scales
-together overrun the 16 MiB device.
+`loom-genip` checks the images against the 16 MiB flash of the reference
+board. It gives a warning above 14 MiB of weights, and it stops with an error
+when the weights and the scales together overrun 16 MiB.
 
 `loom-genip` prints the weight split when you configure a BRAM cache, and it
 writes the per-matrix manifest. Read the manifest to see where each matrix

@@ -7,6 +7,7 @@
 import 'dart:io';
 
 import 'package:harbor/harbor.dart';
+import 'package:loom/loom.dart' show LoomDdrBoard;
 import 'package:rohd/rohd.dart';
 import 'package:test/test.dart';
 
@@ -107,7 +108,7 @@ void main() {
         name: 'LoomStreamSoC',
         transport: LoomTransport.uart,
         target: _ecp5(),
-        datapath: const StreamDatapath(weightsInDdr: true),
+        datapath: StreamDatapath(ddr: LoomDdrBoard.require('orangecrab-25f')),
       );
       await soc.build();
       final sv = soc.generateSynth();

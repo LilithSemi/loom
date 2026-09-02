@@ -11,8 +11,8 @@ accelerator IP, and it drives that IP from the host.
   and the `loom.json` manifest.
 - [models.md](models.md) - the model formats, the quantization, the model
   features and the size limits.
-- [hardware.md](hardware.md) - the boards, the memory map, the clocking and
-  the transports.
+- [hardware.md](hardware.md) - the targets and boards, the memory map, the
+  clocking and the transports.
 - [flashing.md](flashing.md) - how to build a bitstream and how to write it
   and the weights to a board.
 - [runtime.md](runtime.md) - `loom-cli`, the OpenAI-compatible server and the
@@ -30,6 +30,7 @@ accelerator IP, and it drives that IP from the host.
 | Build the tools | [getting-started.md](getting-started.md) |
 | Know how Loom works | [architecture.md](architecture.md), then [hardware.md](hardware.md) |
 | Compile a model into RTL | [genip.md](genip.md) and [models.md](models.md) |
+| Build for a different FPGA | [hardware.md](hardware.md#select-a-target) |
 | Put a design on a board | [flashing.md](flashing.md) |
 | Generate text from a flashed board | [runtime.md](runtime.md) |
 | Fix a board that misbehaves | [debugging.md](debugging.md) |
